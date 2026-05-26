@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Feliz Cumpleaños, Mi Amor!</title>
+    <style>
+        :root {
+            --primary: #ff3366;
+            --primary-dark: #e01a4f;
+            --secondary: #ff758f;
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --text: #2b001a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #ff9a9e, #fecfef, #feada6, #ffc3a0);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            padding: 20px;
+            position: relative;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Contenedor de Cristal */
+        .card-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 2px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 550px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            z-index: 10;
+            position: relative;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .hidden {
+            display: none !important;
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        h1 {
+            font-size: 2.3rem;
+            color: var(--text);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #662249;
+            margin-bottom: 30px;
+        }
+
+        /* Galería de Fotos */
+        .photo-gallery {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+
+        .polaroid {
+            background: white;
+            padding: 10px 10px 25px 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            border-radius: 4px;
+            width: 130px;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 2px;
+        }
+
+        .polaroid:nth-child(1) { transform: rotate(-6deg); }
+        .polaroid:nth-child(2) { transform: rotate(4deg); }
+
+        .polaroid:hover {
+            transform: scale(1.15) rotate(0deg) translateY(-10px);
+            z-index: 15;
+            box-shadow: 0 15px 30px rgba(255, 51, 102, 0.2);
+        }
+
+        /* MODAL MULTIMEDIA (FOTO + VIDEO) */
+        .image-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(43, 0, 26, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 200;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            padding: 15px;
+        }
+
+        .image-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 750px;
+            max-height: 90vh;
+            transform: scale(0.7);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+        }
+
+        .image-modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-media-flex {
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .modal-media-flex { flex-direction: column; }
+        }
+
+        .modal-media-flex img, .modal-media-flex video {
+            max-width: 100%;
+            width: 100%;
+            max-height: 45vh;
+            object-fit: contain;
+            border-radius: 6px;
+            flex: 1;
+        }
+
+        .modal-caption {
+            margin-top: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+
+        /* NUEVO MODAL PARA LA CARTA EXTENDIDA (HERMOSO Y SCANNABLE) */
+        .letter-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(254, 207, 239, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 250;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            padding: 20px;
+        }
+
+        .letter-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .letter-paper {
+            background: #fffdf9; /* Tono papel pergamino delicado */
+            background-image: linear-gradient(rgba(255, 51, 102, 0.05) 1px, transparent 1px);
+            background-size: 100% 2em; /* Da un sutil look de líneas de diario */
+            padding: 40px 30px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(102, 34, 73, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            transform: translateY(30px);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: left;
+            box-sizing: border-box;
+        }
+
+        .letter-modal.active .letter-paper {
+            transform: translateY(0);
+        }
+
+        .letter-text {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #3a2232;
+            font-family: 'Georgia', serif; /* Tipografía más íntima y literaria */
+            white-space: pre-line; /* Mantiene tus saltos de línea perfectos */
+        }
+
+        /* Sobre 3D Estático e Interactivo */
+        .envelope-container {
+            position: relative;
+            width: 280px;
+            height: 180px;
+            margin: 0 auto 25px auto;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .envelope {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--secondary);
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+            z-index: 3;
+        }
+
+        .flap {
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-left: 140px solid transparent;
+            border-right: 140px solid transparent;
+            border-top: 100px solid var(--primary);
+            transform-origin: top;
+            transition: transform 0.4s ease;
+            z-index: 5;
+        }
+
+        .envelope-front {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 140px solid rgba(255, 142, 163, 0.9);
+            border-right: 140px solid rgba(255, 142, 163, 0.9);
+            border-bottom: 90px solid #ff5c8a;
+            top: 90px;
+            z-index: 4;
+            border-radius: 0 0 12px 12px;
+        }
+
+        /* Pequeño adelanto de carta asomándose */
+        .letter-peek {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            height: 80px;
+            background: #fff;
+            border-radius: 4px;
+            z-index: 2;
+            transition: transform 0.4s ease;
+            padding: 10px;
+            font-size: 0.75rem;
+            color: #aaa;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .envelope-container:hover .flap { transform: rotateX(160deg); z-index: 1; }
+        .envelope-container:hover .letter-peek { transform: translateY(-20px); }
+
+        .hint {
+            font-size: 0.85rem;
+            color: var(--primary-dark);
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 51, 102, 0.3);
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 26px rgba(255, 51, 102, 0.4);
+        }
+
+        /* PÁGINA 2: DETALLES DE LA ESTADÍA */
+        .booking-details {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .hotel-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .hotel-img:hover { transform: scale(1.02); }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 12px 15px;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+
+        .info-label { font-weight: bold; color: var(--primary-dark); }
+        .info-value { color: #4a4a4a; }
+
+        .badge-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary);
+            border: 1px solid rgba(255, 51, 102, 0.2);
+        }
+
+        /* Botón de control de música flotante */
+        .music-toggle-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+            padding: 10px 15px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .music-toggle-btn:hover { background: white; transform: scale(1.05); }
+
+        /* Corazones flotantes */
+        .floating-heart {
+            position: absolute;
+            background: radial-gradient(circle at 30% 30%, #ff6b8b, var(--primary));
+            display: inline-block;
+            height: 14px;
+            width: 14px;
+            transform: rotate(-45deg);
+            animation: floatUp 8s linear infinite;
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .floating-heart::before, .floating-heart::after {
+            content: "";
+            background: inherit;
+            border-radius: 50%;
+            position: absolute;
+            width: 14px;
+            height: 14px;
+        }
+        .floating-heart::before { top: -7px; left: 0; }
+        .floating-heart::after { left: 7px; top: 0; }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(-45deg) scale(0.5); opacity: 0; }
+            15% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) rotate(-45deg) scale(1.2); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- VIDEO DE FONDO Y AUDIO PÁGINA 1 -->
+    <video id="romanticVideo" loop style="display:none;">
+        <source src="/video/FelizCumpleMayo.mp4" type="video/mp4">
+    </video>
+
+    <!-- AUDIO PARA LA PÁGINA 2 (EL VIAJE) -->
+    <audio id="musicPage2" loop>
+        <source src="/Music/Melendi.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Botón Flotante de Música -->
+    <button class="music-toggle-btn" onclick="toggleAudio()" id="musicBtn">🎵 Reproducir música</button>
+
+    <!-- VISOR MULTIMEDIA (Muestra Foto + Video juntos o solo Foto) -->
+    <div class="image-modal" id="imageModal" onclick="closeZoom()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-media-flex">
+                <img id="modalImg" src="" alt="Zoom">
+                <video id="modalVideo" controls></video>
+            </div>
+            <div class="modal-caption" id="modalCaption">Texto</div>
+            <button class="action-btn" style="padding: 6px 15px; font-size: 0.85rem; margin-top: 10px; background: #4a4a4a;" onclick="closeZoom()">Cerrar 🌸</button>
+        </div>
+    </div>
+
+    <!-- NUEVO DESPLIEGUE HERMOSO DE LA CARTA (PANTALLA COMPLETA EN ALTA CALIDAD) -->
+    <div class="letter-modal" id="letterModal" onclick="closeLetter()">
+        <div class="letter-paper" onclick="event.stopPropagation()">
+            <div class="letter-text">
+                <strong style="color: var(--primary); font-size: 1.4rem; display:block; margin-bottom: 15px;">Mi niña hermosa, ❤️</strong>
+                Dicen que cumplir años no es solo sumar tiempo, sino darte cuenta de todo lo que ya superaste, de lo fuerte que has sido sin darte cuenta y de lo lejos que has llegado incluso cuando dudabas...
+
+                Hoy, en este día tan especial, celebro tu vida, tus logros y cada paso que has dado. Admiro mucho de ti que, incluso cuando tienes miedo, te arriesgas; que aunque te cueste decidirte, siempre das el paso. Esa valentía que tienes, a tu manera, es algo que me inspira.
+
+                También me contagias de tu alegría, de esa forma tan tuya de hacer que todo se sienta más ligero. Y sinceramente, me siento muy afortunado de tenerte en mi vida.
+
+                Eres lo más lindo que me ha pasado en la vida, y quiero recordarte que mi amor por ti crece cada segundo más. Gracias por regalarme tu hermosa sonrisa día con día, por ser mi compañera y por hacer que cada momento juntos sea una aventura perfecta.
+
+                Quiero que sepas que siempre contarás conmigo. Sé que tienes muchas metas y sueños por cumplir, y me hace ilusión poder acompañarte y apoyarte en cada uno de ellos.
+
+                Y quiero seguir celebrando muchos cumpleaños más a tu lado.
+
+                Feliz cumpleaños ❤️
+
+                Tengo un pequeño secreto preparado para celebrar tu vida como te lo mereces. ¿Estás lista? Cierra esta cartita aquí abajo y pulsa el botón del regalo... 👀👇
+            </div>
+            <center>
+                <button class="action-btn" style="padding: 10px 24px; font-size: 0.9rem; margin-top: 30px;" onclick="closeLetter()">Guardar carta y ver regalo 💖</button>
+            </center>
+        </div>
+    </div>
+
+    <!-- PÁGINA 1: BIENVENIDA Y SOBRE -->
+    <div class="card-container" id="page1">
+        <h1>¡Feliz Cumpleaños, Mi Amor!🌸✨</h1>
+        <p class="subtitle">Para la niña que adueña mi corazón entero.</p>
+        <p class="hint" id="hintText">Toca las fotos</p> <br>
+
+        <div class="photo-gallery">
+            <div class="polaroid" onclick="zoomIn(this)" data-title="Tú y Yo ❤️">
+                <img src="/Img/KLC.png" alt="Nosotros">
+                <p style="font-size: 0.75rem; margin-top: 8px; font-family: 'Courier New'; font-weight: bold;">Tú y Yo ❤️</p>
+            </div>
+            
+            <div class="polaroid" onclick="openPhotoAndVideoSorpresa(this)" data-title="Tu Hermosa Sonrisa ✨">
+                <img src="/Img/DMV.png" alt="Tu sonrisa">
+                <p style="font-size: 0.75rem; margin-top: 8px; font-family: 'Courier New'; font-weight: bold;">Tu Sonrisa ✨</p>
+            </div>
+        </div>
+
+        <!-- El Sobre ahora abre la carta en pantalla completa -->
+        <div class="envelope-container" id="myEnvelope" onclick="openLetter()">
+            <div class="flap"></div>
+            <div class="envelope"></div>
+            <div class="envelope-front"></div>
+            <div class="letter-peek">💌 Leer mi carta para ti...</div>
+        </div>
+
+        <p class="hint" id="hintText">Toca el sobre para abrir tu carta</p>
+
+        <button class="action-btn" onclick="goToPage2()">🎁 Ver tu sorpresa de cumpleaños</button>
+    </div>
+
+    <!-- PÁGINA 2: DETALLES DE LA ESTADÍA -->
+    <div class="card-container hidden" id="page2">
+        <h1>¡Nos Vamos de Viaje! ✈️💖</h1>
+        <p class="subtitle" style="margin-bottom: 20px;">Prepara las maletas, porque tu regalo es una escapada inolvidable.</p>
+
+        <div class="booking-details">
+            <img class="hotel-img" src="/Img/beach.png" alt="Hotel" onclick="zoomIn(this)" data-title="¡Nuestro Próximo Destino! 🌴">
+            <div class="info-label">¿Qué incluye?:</div><br>
+            <div class="badge-container">
+                <span class="badge">👨‍🍳 Cocinero privado</span>
+                <span class="badge">🌊 Playa y piscina</span>
+                <span class="badge">🥂 Brindis de Bienvenida</span>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-label">📍 Destino:</div>
+                <div class="info-value">Un lugar mágico cerca al mar. </div>
+
+                <div class="info-label">📅 Fecha:</div>
+                <div class="info-value">Sábado 30 y Domingo 31 de mayo.</div>
+
+                <div class="info-label">⏰ Hora de salida de Gye:</div>
+                <div class="info-value">11:00 hrs</div>
+
+                <div class="info-label">💞 Nota:</div>
+                <div class="info-value">Tú solo encárgate de sonreír, del resto me encargo yo. 🥰</div>
+            </div>
+        </div>
+
+        <button class="action-btn" style="background: #4a4a4a; margin-top: 5px;" onclick="goToPage1()">⬅️ Volver a la carta</button>
+    </div>
+
+    <script {__security_and_privacy_booster__}>
+        const video1 = document.getElementById('romanticVideo');
+        const modalVideo = document.getElementById('modalVideo');
+        const modalImg = document.getElementById('modalImg');
+        const music2 = document.getElementById('musicPage2');
+        const musicBtn = document.getElementById('musicBtn');
+        let currentPage = 1;
+
+        // FUNCIONES DE LA CARTA EXTENDIDA
+        function openLetter() {
+            document.getElementById('letterModal').classList.add('active');
+            // Si la música no está sonando, la arranca al abrir la carta
+            if(video1.paused && music2.paused) {
+                video1.play();
+                musicBtn.innerText = "⏸️ Pausar música";
+            }
+        }
+
+        function closeLetter() {
+            document.getElementById('letterModal').classList.remove('active');
+        }
+
+        // Abrir Foto + Video juntos
+        function openPhotoAndVideoSorpresa(element) {
+            const modal = document.getElementById('imageModal');
+            const modalCaption = document.getElementById('modalCaption');
+            
+            modalImg.style.display = 'block';
+            modalVideo.style.display = 'block';
+            
+            const clickedImg = element.querySelector('img');
+            modalImg.src = clickedImg.src;
+            
+            modalVideo.src = video1.querySelector('source').src;
+            modalCaption.innerText = element.getAttribute('data-title') || '';
+            modal.classList.add('active');
+            
+            video1.play();
+            modalVideo.play().then(() => {
+                musicBtn.innerText = "⏸️ Pausar música";
+            }).catch(e => console.log("Audio en espera"));
+        }
+
+        // Zoom normal de fotos
+        function zoomIn(element) {
+            const modal = document.getElementById('imageModal');
+            const modalCaption = document.getElementById('modalCaption');
+            
+            modalVideo.style.display = 'none';
+            modalImg.style.display = 'block';
+            
+            const clickedImg = element.tagName === 'IMG' ? element : element.querySelector('img');
+            modalImg.src = clickedImg.src;
+            modalCaption.innerText = element.getAttribute('data-title') || '';
+            modal.classList.add('active');
+        }
+
+        function closeZoom() {
+            document.getElementById('imageModal').classList.remove('active');
+            if (!modalVideo.paused) {
+                video1.currentTime = modalVideo.currentTime;
+                video1.play();
+            }
+            modalVideo.pause(); 
+        }
+
+        // Navegación de páginas
+        function goToPage2() {
+            currentPage = 2;
+            document.getElementById('page1').classList.add('hidden');
+            document.getElementById('page2').classList.remove('hidden');
+            closeLetter(); // Por si acaso estuviera abierta
+            
+            video1.pause();
+            video1.currentTime = 0;
+            modalVideo.pause();
+            
+            music2.play().then(() => {
+                musicBtn.innerText = "⏸️ Pausar música";
+            });
+            
+            for (let i = 0; i < 20; i++) {
+                setTimeout(createHeart, i * 80);
+            }
+        }
+
+        function goToPage1() {
+            currentPage = 1;
+            document.getElementById('page2').classList.add('hidden');
+            document.getElementById('page1').classList.remove('hidden');
+            
+            music2.pause();
+            music2.currentTime = 0;
+            
+            video1.play();
+            musicBtn.innerText = "⏸️ Pausar música";
+        }
+
+        function toggleAudio() {
+            if (currentPage === 1) {
+                if (video1.paused) {
+                    video1.play();
+                    if(document.getElementById('imageModal').classList.contains('active') && modalVideo.style.display !== 'none') {
+                        modalVideo.play();
+                    }
+                    musicBtn.innerText = "⏸️ Pausar música";
+                } else {
+                    video1.pause();
+                    modalVideo.pause();
+                    musicBtn.innerText = "🎵 Reproducir música";
+                }
+            } else {
+                if (music2.paused) {
+                    music2.play();
+                    musicBtn.innerText = "⏸️ Pausar música";
+                } else {
+                    music2.pause();
+                    musicBtn.innerText = "🎵 Reproducir música";
+                }
+            }
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart');
+            heart.style.left = Math.random() * 100 + 'vw';
+            
+            const duration = Math.random() * 4 + 5;
+            const size = Math.random() * 8 + 10;
+            
+            heart.style.animationDuration = duration + 's';
+            heart.style.width = size + 'px';
+            heart.style.height = size + 'px';
+            
+            document.body.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, duration * 1000);
+        }
+
+        setInterval(createHeart, 800);
+    </script>
+</body>
+</html>
