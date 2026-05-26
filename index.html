@@ -110,7 +110,7 @@
             box-shadow: 0 15px 30px rgba(255, 51, 102, 0.2);
         }
 
-        /* MODAL MULTIMEDIA (FOTO + VIDEO) */
+        /* MODAL MULTIMEDIA CORREGIDO */
         .image-modal {
             position: fixed;
             top: 0;
@@ -119,6 +119,7 @@
             height: 100%;
             background: rgba(43, 0, 26, 0.85);
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             z-index: 200;
             display: flex;
             justify-content: center;
@@ -140,11 +141,16 @@
             box-shadow: 0 25px 50px rgba(0,0,0,0.3);
             border-radius: 12px;
             width: 100%;
-            max-width: 750px;
+            max-width: 500px; /* Reducido para que se adapte mejor a celulares */
             max-height: 90vh;
+            overflow-y: auto; /* Permite scroll si el contenido supera la pantalla */
             transform: scale(0.7);
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
         }
 
         .image-modal.active .modal-content {
@@ -153,35 +159,30 @@
 
         .modal-media-flex {
             display: flex;
-            flex-direction: row;
+            flex-direction: column; /* Cambiado a columna para celulares por defecto */
             gap: 15px;
             justify-content: center;
             align-items: center;
-            margin-bottom: 15px;
-        }
-
-        @media (max-width: 600px) {
-            .modal-media-flex { flex-direction: column; }
+            width: 100%;
         }
 
         .modal-media-flex img, .modal-media-flex video {
             max-width: 100%;
             width: 100%;
-            max-height: 45vh;
+            max-height: 32vh; /* Altura controlada para que quepan ambos */
             object-fit: contain;
             border-radius: 6px;
-            flex: 1;
         }
 
         .modal-caption {
-            margin-top: 10px;
             font-family: 'Courier New', Courier, monospace;
             font-weight: bold;
             font-size: 1.1rem;
             color: var(--text);
+            margin-top: 5px;
         }
 
-        /* NUEVO MODAL PARA LA CARTA EXTENDIDA (HERMOSO Y SCANNABLE) */
+        /* NUEVO MODAL PARA LA CARTA EXTENDIDA */
         .letter-modal {
             position: fixed;
             top: 0;
@@ -207,9 +208,9 @@
         }
 
         .letter-paper {
-            background: #fffdf9; /* Tono papel pergamino delicado */
+            background: #fffdf9;
             background-image: linear-gradient(rgba(255, 51, 102, 0.05) 1px, transparent 1px);
-            background-size: 100% 2em; /* Da un sutil look de líneas de diario */
+            background-size: 100% 2em;
             padding: 40px 30px;
             border-radius: 16px;
             width: 100%;
@@ -232,8 +233,8 @@
             font-size: 1.05rem;
             line-height: 1.8;
             color: #3a2232;
-            font-family: 'Georgia', serif; /* Tipografía más íntima y literaria */
-            white-space: pre-line; /* Mantiene tus saltos de línea perfectos */
+            font-family: 'Georgia', serif;
+            white-space: pre-line;
         }
 
         /* Sobre 3D Estático e Interactivo */
@@ -281,7 +282,6 @@
             border-radius: 0 0 12px 12px;
         }
 
-        /* Pequeño adelanto de carta asomándose */
         .letter-peek {
             position: absolute;
             top: 20px;
@@ -430,20 +430,16 @@
 </head>
 <body>
 
-    <!-- VIDEO DE FONDO Y AUDIO PÁGINA 1 -->
     <video id="romanticVideo" loop style="display:none;">
         <source src="video/FelizCumpleMayo.mp4" type="video/mp4">
     </video>
 
-    <!-- AUDIO PARA LA PÁGINA 2 (EL VIAJE) -->
     <audio id="musicPage2" loop>
         <source src="Music/Melendi.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- Botón Flotante de Música -->
     <button class="music-toggle-btn" onclick="toggleAudio()" id="musicBtn">🎵 Reproducir música</button>
 
-    <!-- VISOR MULTIMEDIA (Muestra Foto + Video juntos o solo Foto) -->
     <div class="image-modal" id="imageModal" onclick="closeZoom()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-media-flex">
@@ -451,11 +447,10 @@
                 <video id="modalVideo" controls></video>
             </div>
             <div class="modal-caption" id="modalCaption">Texto</div>
-            <button class="action-btn" style="padding: 6px 15px; font-size: 0.85rem; margin-top: 10px; background: #4a4a4a;" onclick="closeZoom()">Cerrar 🌸</button>
+            <button class="action-btn" style="padding: 10px 25px; font-size: 0.9rem; margin-top: 5px; background: #4a4a4a;" onclick="closeZoom()">Cerrar 🌸</button>
         </div>
     </div>
 
-    <!-- NUEVO DESPLIEGUE HERMOSO DE LA CARTA (PANTALLA COMPLETA EN ALTA CALIDAD) -->
     <div class="letter-modal" id="letterModal" onclick="closeLetter()">
         <div class="letter-paper" onclick="event.stopPropagation()">
             <div class="letter-text">
@@ -482,7 +477,6 @@
         </div>
     </div>
 
-    <!-- PÁGINA 1: BIENVENIDA Y SOBRE -->
     <div class="card-container" id="page1">
         <h1>¡Feliz Cumpleaños, Mi Amor!🌸✨</h1>
         <p class="subtitle">Para la niña que adueña mi corazón entero.</p>
@@ -500,7 +494,6 @@
             </div>
         </div>
 
-        <!-- El Sobre ahora abre la carta en pantalla completa -->
         <div class="envelope-container" id="myEnvelope" onclick="openLetter()">
             <div class="flap"></div>
             <div class="envelope"></div>
@@ -508,12 +501,11 @@
             <div class="letter-peek">💌 Leer mi carta para ti...</div>
         </div>
 
-        <p class="hint" id="hintText">Toca el sobre para abrir tu carta</p>
+        <p class="hint">Toca el sobre para abrir tu carta</p>
 
         <button class="action-btn" onclick="goToPage2()">🎁 Ver tu sorpresa de cumpleaños</button>
     </div>
 
-    <!-- PÁGINA 2: DETALLES DE LA ESTADÍA -->
     <div class="card-container hidden" id="page2">
         <h1>¡Nos Vamos de Viaje! ✈️💖</h1>
         <p class="subtitle" style="margin-bottom: 20px;">Prepara las maletas, porque tu regalo es una escapada inolvidable.</p>
@@ -545,7 +537,7 @@
         <button class="action-btn" style="background: #4a4a4a; margin-top: 5px;" onclick="goToPage1()">⬅️ Volver a la carta</button>
     </div>
 
-    <script {__security_and_privacy_booster__}>
+    <script>
         const video1 = document.getElementById('romanticVideo');
         const modalVideo = document.getElementById('modalVideo');
         const modalImg = document.getElementById('modalImg');
@@ -553,10 +545,8 @@
         const musicBtn = document.getElementById('musicBtn');
         let currentPage = 1;
 
-        // FUNCIONES DE LA CARTA EXTENDIDA
         function openLetter() {
             document.getElementById('letterModal').classList.add('active');
-            // Si la música no está sonando, la arranca al abrir la carta
             if(video1.paused && music2.paused) {
                 video1.play();
                 musicBtn.innerText = "⏸️ Pausar música";
@@ -567,7 +557,6 @@
             document.getElementById('letterModal').classList.remove('active');
         }
 
-        // Abrir Foto + Video juntos
         function openPhotoAndVideoSorpresa(element) {
             const modal = document.getElementById('imageModal');
             const modalCaption = document.getElementById('modalCaption');
@@ -588,7 +577,6 @@
             }).catch(e => console.log("Audio en espera"));
         }
 
-        // Zoom normal de fotos
         function zoomIn(element) {
             const modal = document.getElementById('imageModal');
             const modalCaption = document.getElementById('modalCaption');
@@ -598,6 +586,7 @@
             
             const clickedImg = element.tagName === 'IMG' ? element : element.querySelector('img');
             modalImg.src = clickedImg.src;
+            
             modalCaption.innerText = element.getAttribute('data-title') || '';
             modal.classList.add('active');
         }
@@ -611,12 +600,11 @@
             modalVideo.pause(); 
         }
 
-        // Navegación de páginas
         function goToPage2() {
             currentPage = 2;
             document.getElementById('page1').classList.add('hidden');
             document.getElementById('page2').classList.remove('hidden');
-            closeLetter(); // Por si acaso estuviera abierta
+            closeLetter();
             
             video1.pause();
             video1.currentTime = 0;
